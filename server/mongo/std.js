@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const config = require('../config/main.json');
 mongoose.connect(config.mongoDBUrl + config.dataBase);
 
-const { Schema } = mongoose;
+const {
+    Schema
+} = mongoose;
 
 const stdSchema = new Schema({
     stdId: {

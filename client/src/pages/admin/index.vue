@@ -1,208 +1,431 @@
 <template>
-    <div class="layout body">
-        <Menu mode="horizontal" theme="dark" active-key="1" @on-select='onMenuSelect'>
-            <div class="layout-logo">
-                SCSE
-            </div>
-            <div class="layout-nav">
-                <Menu-item key="1" name='nav'>
-                    <Icon type="ios-navigate"></Icon>
-                    主页
-                </Menu-item>
-                <Menu-item key="2" name='seeExcel'>
-                    <Icon type="ios-keypad"></Icon>
-                    查看报名情况
-                </Menu-item>
-                <Menu-item key="3" name='getExcel'>
-                    <Icon type="ios-analytics"></Icon>
-                    导出表格
-                </Menu-item>
-            </div>
-        </Menu>
-        <div class="layout-content">
-            <div v-if='content.nav'>
-                <div class="index-content">
-                    <p class="title">欢迎</p>
-                </div>
-            </div>
-            <div v-else-if="content.seeExcel">
-                <i-table stripe :columns="columns" :data="stdData"></i-table>
-                <div class="layout-page">
-                    <Page :total="totalPages" show-total @on-change='changePage'></Page>
-                </div>
-            </div>
+  <div class="layout body">
+    <Menu mode="horizontal" theme="dark" active-key="1" @on-select="onMenuSelect">
+      <div class="layout-logo">SCSE</div>
+      <div class="layout-nav">
+        <Menu-item key="1" name="nav">
+          <Icon type="ios-navigate"></Icon>主页
+        </Menu-item>
+        <Menu-item key="2" name="seeExcel">
+          <Icon type="ios-keypad"></Icon>查看报名情况
+        </Menu-item>
+        <Menu-item key="3" name="getExcel">
+          <Icon type="ios-analytics"></Icon>导出表格
+        </Menu-item>
+      </div>
+    </Menu>
+    <div class="layout-content">
+      <div v-if="content.nav">
+        <div class="index-content">
+          <p class="title">欢迎</p>
+          <p class="content">管理员权限：{{userAuthority}}</p>
+          <p class="content">管理员所属组织：{{userOrganization}}</p>
         </div>
-        <div class="layout-copy">
-            2020 &copy; 学生创新实践中心
+      </div>
+      <div v-else-if="content.seeExcel">
+        <i-table stripe :columns="columns" :data="stdData">
+          <template slot="action" slot-scope="{row}">
+            <i-button type="default" @click="changeData(row)" :disabled="isNormal">修改</i-button>
+          </template>
+        </i-table>
+        <div class="layout-page">
+          <Page :total="totalPages" show-total @on-change="changePage"></Page>
         </div>
-        <zy-loading :loadingShow="loadingShow"></zy-loading>
+      </div>
     </div>
+    <div class="layout-copy">2020 &copy; 学生创新实践中心</div>
+    <zy-loading :loadingShow="loadingShow"></zy-loading>
+
+    <div class="killBox" v-if="changeWindow.open">
+      <Modal
+        v-model="changeWindow.open"
+        title="信息修改"
+        @on-ok="changeSend"
+        @on-cancel="changeCancel"
+        width="700px"
+      >
+        <h2 class="firstRow">基本信息</h2>
+        <Row :gutter="16">
+          <Col span="6">
+            <p>学号</p>
+            <i-input
+              class="input"
+              icon="ios-person"
+              placeholder="请输入学号"
+              v-model="changeWindow.data.stdId"
+            ></i-input>
+          </Col>
+
+          <Col span="6">
+            <p>姓名</p>
+            <i-input
+              class="input"
+              icon="ios-clock"
+              placeholder="请输入姓名"
+              v-model="changeWindow.data.stdName"
+            ></i-input>
+          </Col>
+
+          <Col span="6">
+            <p>QQ</p>
+            <i-input class="input" icon="qq" placeholder="请输入qq号" v-model="changeWindow.data.stdQQ"></i-input>
+          </Col>
+
+          <Col span="6">
+            <p>电话</p>
+            <i-input
+              class="input"
+              icon="ios-phone"
+              placeholder="请输入手机号"
+              v-model="changeWindow.data.stdPhone"
+            ></i-input>
+          </Col>
+
+          <Col span="24">
+            <p class="content">请选择专业与班级</p>
+            <Cascader class="select" :data="majorData" v-model="changeWindow.major"></Cascader>
+          </Col>
+        </Row>
+
+        <h2 class="secondRow">志愿信息</h2>
+        <Row>
+          <Col :span="11">
+            <p class="content">请选择第一志愿</p>
+            <Cascader class="select" :data="orginazationData" v-model="changeWindow.will.first"></Cascader>
+            <i-input
+              class="select textarea"
+              v-model="changeWindow.data.reasonFirst"
+              type="textarea"
+              placeholder="请输入加入此组织的理由"
+            ></i-input>
+          </Col>
+          <Col :span="11" offset="2">
+            <p class="content">请选择第二志愿</p>
+            <Cascader class="select" :data="orginazationData" v-model="changeWindow.will.second"></Cascader>
+            <i-input
+              class="select textarea"
+              v-model="changeWindow.data.reasonSecond"
+              type="textarea"
+              placeholder="请输入加入此组织的理由"
+            ></i-input>
+          </Col>
+          <Col :span="24">
+            <p class="content">是否调剂</p>
+            <i-switch v-model="changeWindow.data.isDispensing">
+              <span slot="open">是</span>
+              <span slot="close">否</span>
+            </i-switch>
+          </Col>
+        </Row>
+      </Modal>
+    </div>
+  </div>
 </template>
 <style lang="scss" scoped>
-    .layout{
-        border: 1px solid #d7dde4;
-        background: #f5f7f9;
-        position: relative;
-        min-height:100vh;
+.layout {
+  border: 1px solid #d7dde4;
+  background: #f5f7f9;
+  position: relative;
+  min-height: 100vh;
+}
+.layout-logo {
+  width: 100px;
+  height: 30px;
+  background: #5b6270;
+  border-radius: 3px;
+  float: left;
+  position: relative;
+  top: 15px;
+  left: 20px;
+  color: white;
+  line-height: 30px;
+  text-align: center;
+  font-size: 20px;
+  letter-spacing: 5px;
+}
+.layout-nav {
+  width: 420px;
+  margin: 0 auto;
+}
+.layout-content {
+  width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 50px;
+  text-align: center;
+  margin-top: 40px;
+  background-color: #fff;
+  .index-content {
+    width: 100%;
+    background-image: url("../../assets/indexBg.jpg");
+    background-size: cover;
+    height: 600px;
+    position: relative;
+    .title {
+      font-size: 40px;
+      color: white;
+      text-align: start;
+      animation: anm1 0.8s linear;
+      margin-left: 40px;
+      padding-top: 30px;
     }
-    .layout-logo{
-        width: 100px;
-        height: 30px;
-        background: #5b6270;
-        border-radius: 3px;
-        float: left;
-        position: relative;
-        top: 15px;
-        left: 20px;
-        color:white;
-        line-height: 30px;
-        text-align: center;
-        font-size:20px;
-        letter-spacing: 5px;
+    .content {
+      text-align: start;
+      font-size: 16px;
+      color: white;
+      margin-left: 20px;
     }
-    .layout-nav{
-        width: 420px;
-        margin: 0 auto;
+  }
+  @keyframes anm1 {
+    0% {
+      opacity: 0;
     }
-    .layout-content{
-        width:1200px;
-        margin-left:auto;
-        margin-right:auto;
-        margin-bottom:50px;
-        text-align: center;
-        margin-top:40px;
-        background-color: #fff;
-        .index-content{
-            width:100%;
-            background-image: url('../../assets/indexBg.jpg');
-            background-size:cover;
-            height:600px;
-            position: relative;
-            .title{
-                position:absolute;
-                font-size:40px;
-                color:white;
-                top:30px;
-                left:40px;
-                animation: anm1 .8s linear;
-            }
-        }
-        @keyframes anm1{
-            0%{
-                opacity:0;
-            }
-            100%{
-                opacity:1;
-            }
-        }
-        .layout-page{
-            margin-top:20px;
-            margin-bottom:20px;
-        }
-        padding-bottom: 1px;;
+    100% {
+      opacity: 1;
     }
-    .layout-copy{
-        text-align: center;
-        position:absolute;
-        padding: 10px 0 20px;
-        color: #9ea7b4;
-        bottom:0;
-        left:0;
-        right:0;
+  }
+  .layout-page {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  padding-bottom: 1px;
+}
+.layout-copy {
+  text-align: center;
+  position: absolute;
+  padding: 10px 0 20px;
+  color: #9ea7b4;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.body {
+  animation: anm1 0.3s ease-in;
+  @keyframes anm1 {
+    0% {
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transform: scale(0.98);
     }
-    .body{
-        animation:anm1 .3s ease-in;
-        @keyframes anm1{
-            0%{
-                width:100%;
-                height:100%;
-                opacity:0;
-                transform:scale(0.98);
-            }
-            100%{
-                width:100%;
-                height:100%;
-                opacity:1;
-                transform:scale(1.0);
-            }
-        }
+    100% {
+      width: 100%;
+      height: 100%;
+      opacity: 1;
+      transform: scale(1);
     }
+  }
+}
+.ivu-modal {
+  .content {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 16px;
+  }
+  .select {
+    margin-top: 10px;
+  }
+  .secondRow {
+    margin-top: 20px;
+  }
+  .firstRow {
+    margin-bottom: 10px;
+  }
+  .ivu-switch {
+    display: block;
+    margin: 0 auto;
+  }
+}
 </style>
 <script>
-    import config from '@/config/select.json';
-    import loading from '@/components/loading.vue';
-    export default {
-        data(){
-            return{
-                content:{
-                    nav:true,
-                    seeExcel:false
-                },
-                loadingShow:false,
-                columns:config.tableColumns,
-                stdData:[],
-                allData:[],
-                totalPages:0
-            }
+import config from "@/config/select.json";
+import loading from "@/components/loading.vue";
+export default {
+  data() {
+    return {
+      content: {
+        nav: true,
+        seeExcel: false,
+      },
+      loadingShow: false,
+      columns: config.tableColumns,
+      stdData: [],
+      allData: [],
+      totalPages: 0,
+      //修改窗口数据
+      changeWindow: {
+        //是否开启
+        open: false,
+        //真正的接口数据
+        data: {},
+        //配合级联选择器的临时数组
+        will: {
+          first: [],
+          second: [],
         },
-        created(){
-            let userToken = sessionStorage.getItem('userToken');
-            let userId = sessionStorage.getItem('userId');
-            this.loadingShow = true;
-            if(userToken==undefined||userToken==null){
-                this.$Message.error('非法登陆，请重新登录');
-                setTimeout(()=>{
-                    this.$router.push({path:'/login'});
-                },500);
-            } else {
-                let data = {
-                    userId:userId,
-                    userToken:userToken
-                }
-                this.axios.post(config.serverAddress+'/verify',data).then(res=>{
-                    if(res.data.status){
-                        this.loadingShow = false;
-                    } else {
-                        this.$Message.error('非法登陆，请重新登录');
-                        setTimeout(()=>{
-                            this.$router.push({path:'/login'});
-                        },500);
-                    }
-                })
-            }
-
-        },
-        methods:{
-            onMenuSelect(name){
-                if(name=='nav'){
-                    this.content.nav = true;
-                    this.content.seeExcel = false;
-                } else if (name=='seeExcel'){
-                    this.content.nav = !this.content.nav;
-                    this.content.seeExcel = !this.content.seeExcel;
-                    this.loadingShow = true;
-                    this.getExcel(()=>{
-                        setTimeout(()=>{
-                            this.loadingShow = false;
-                        },500);
-                    });
-                }
-            },
-            getExcel(callback){
-                this.axios.get(config.serverAddress+'/stdData').then(res=>{
-                    this.totalPages = res.data.length;
-                    this.allData = res.data.stdDataArr;
-                    this.stdData = this.allData.slice(0,10);
-                    if(callback) callback();
-                })
-            },
-            changePage(page){
-                let start = 10*(page-1);
-                this.stdData = this.allData.slice(start,start+10);
-            }
-        },
-        components:{
-            'zy-loading':loading
+        major: [],
+      },
+      //组织数据
+      orginazationData: config.orginazationData,
+      //专业数据
+      majorData: config.majorData,
+      //管理员权限
+      userAuthority: undefined,
+      //管理员组织
+      userOrganization: undefined,
+      //后端判断管理员组织
+      isNormal: true,
+    };
+  },
+  created() {
+    let userToken = sessionStorage.getItem("userToken");
+    let userId = sessionStorage.getItem("userId");
+    this.loadingShow = true;
+    if (userToken == undefined || userToken == null) {
+      this.$Message.error("非法登陆，请重新登录");
+      setTimeout(() => {
+        this.$router.push({ path: "/login" });
+      }, 500);
+    } else {
+      let data = {
+        userId: userId,
+        userToken: userToken,
+      };
+      this.axios.post(config.serverAddress + "/verify", data).then((res) => {
+        if (res.data.status) {
+          this.loadingShow = false;
+        } else {
+          this.$Message.error("非法登陆，请重新登录");
+          setTimeout(() => {
+            this.$router.push({ path: "/login" });
+          }, 500);
         }
+      });
     }
+  },
+  mounted() {
+    this.userAuthority = sessionStorage.getItem("userAuthority");
+    this.userOrganization = sessionStorage.getItem("userOrganization");
+    //查询管理员权限
+    this.authoritycheck();
+  },
+  methods: {
+    onMenuSelect(name) {
+      if (name == "nav") {
+        this.content.nav = true;
+        this.content.seeExcel = false;
+      } else if (name == "seeExcel") {
+        this.content.nav = !this.content.nav;
+        this.content.seeExcel = !this.content.seeExcel;
+        this.loadingShow = true;
+        this.getExcel(() => {
+          setTimeout(() => {
+            this.loadingShow = false;
+          }, 500);
+        });
+      }
+    },
+    //从数据库获取数据
+    getExcel(callback) {
+      //获取当前管理员所属组织
+      let organization = sessionStorage.getItem("userOrganization");
+      this.axios
+        .get(
+          config.serverAddress + "/stdData" + `?organization=${organization}`
+        ) //获取学生数据并将组织名当做参数传出
+        .then((res) => {
+          this.totalPages = res.data.length;
+          this.allData = res.data.stdDataArr;
+          this.stdData = this.allData.slice(0, 10);
+          if (callback) callback();
+        });
+    },
+    changePage(page) {
+      let start = 10 * (page - 1);
+      this.stdData = this.allData.slice(start, start + 10);
+    },
+    //打开修改窗口
+    changeData(data) {
+      //创建要修改的数据
+      Object.assign(this.changeWindow.data, data);
+      //配合级联选择器
+      this.changeWindow.will.first = [
+        this.changeWindow.data.organizationFirst,
+        this.changeWindow.data.branchFirst,
+      ];
+      this.changeWindow.will.second = [
+        this.changeWindow.data.organizationSecond,
+        this.changeWindow.data.branchSecond,
+      ];
+      this.changeWindow.major = [
+        this.changeWindow.data.major,
+        this.changeWindow.data.classNum,
+      ];
+      //开启窗口
+      this.changeWindow.open = true;
+    },
+    changeSend() {
+      //从级联选择器中取出数据
+      [
+        this.changeWindow.data.organizationFirst,
+        this.changeWindow.data.branchFirst,
+      ] = this.changeWindow.will.first;
+      [
+        this.changeWindow.data.organizationSecond,
+        this.changeWindow.data.branchSecond,
+      ] = this.changeWindow.will.second;
+      [
+        this.changeWindow.data.major,
+        this.changeWindow.data.classNum,
+      ] = this.changeWindow.major;
+      //前端发送超级管理员身份确认
+      this.changeWindow.data.authority = "super";
+      //发送数据更新请求
+      this.axios
+        .post(config.serverAddress + "/signUp", this.changeWindow.data)
+        .then((res) => {
+          if (res.data.status && res.data.content == undefined) {
+            this.$Message.success("提交成功!");
+          } else {
+            this.$Message.warning(res.data.content);
+          }
+          //关闭修改窗口
+          this.changeWindow.open = false;
+          this.loadingShow = true;
+          //重新加载数据
+          this.getExcel(() => {
+            setTimeout(() => {
+              this.loadingShow = false;
+            }, 500);
+          });
+        });
+    },
+    //取消修改窗口
+    changeCancel() {
+      this.$Message.warning("取消修改!");
+      this.changeWindow.open = false;
+    },
+    //检查权限
+    authoritycheck() {
+      //获取当前管理员账号
+      let userId = sessionStorage.getItem("userId");
+      //请求管理员权限
+      this.axios
+        .post(config.serverAddress + "/authority", { userId })
+        .then((res) => {
+          if (res.data.authority === "super") {
+            this.isNormal = false;
+          } else {
+            this.isNormal = true;
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+  },
+  components: {
+    "zy-loading": loading,
+  },
+};
 </script>

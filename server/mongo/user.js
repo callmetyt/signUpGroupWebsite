@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 const config = require('../config/main.json');
 mongoose.connect(config.mongoDBUrl + config.dataBase);
 
-const { Schema } = mongoose;
+const {
+    Schema
+} = mongoose;
 
 const userSchema = new Schema({
     userId: {
@@ -14,6 +16,10 @@ const userSchema = new Schema({
         required: true
     },
     organization: {
+        type: String,
+        required: true
+    },
+    authority: {
         type: String,
         required: true
     }

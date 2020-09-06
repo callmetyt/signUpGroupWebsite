@@ -130,4 +130,63 @@ Bootstrap,基于jq的materialize 等等...更多的自行搜索
 
 点击提交报名表的时候，要拦截一下，比如不能为空，或是非法学号(学号必须为8位，前四位为2020)等
 
+# 修改
+
+## 修改需求
+
+- 已添加修改按钮 可以修改所有信息
+
+## 调剂功能没有...
+
+- 已添加
+
+## 管理员分级
+
+- super
+  - 可修改
+- normal
+  - 不可
+
+## 组织查询
+
+- 只能查到自己组织的
+  - 无论第一还是第二志愿
+
+## 其他问题
+
+- Excel表格导出还没有完成...
+
+- 组织接口问题
+
+  - 正在使用的形式
+
+    ```javascript
+        organizationFirst: String,
+        branchFirst: String,
+        reasonFirst: String,
+        organizationSecond: String,
+        branchSecond: String,
+        reasonSecond: String,
+    ```
+
+  - 接口文档的形式
+
+    ```javascript
+        firstWill:{
+            organization:String, 
+            branch:String, 
+            reason:String
+        },
+        secondWill:{
+            organization:String, 
+            branch:String, 
+            reason:String
+        },
+    ```
+
+  - 如果修改为接口文档形式，后天查询表格UI组件无法显示全部
+
+- 如果超级管理员修改学号为另一个已经存储在数据库的学号，则会因为`_id`重复而报错
+- 后台报名情况的背景布局问题
+- 组织和班级没有修改，沿用之前的接口（据说20级校级组织会发生变化？）
 
