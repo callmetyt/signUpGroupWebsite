@@ -4,14 +4,18 @@ import router from './router'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css'
 import axios from 'axios';
+import animated from 'animate.css'
 
+Vue.use(animated)
 Vue.use(iView);
 Vue.prototype.axios = axios;
 Vue.config.productionTip = false
 
 new Vue({
-    el: '#app',
-    router,
-    components: { App },
-    template: '<App/>'
+  el: '#app',
+  router,
+  components: {
+    App
+  },
+  template: '<App/>'
 })

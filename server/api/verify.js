@@ -3,10 +3,13 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
     if (global.userToken[req.body.userId] === req.body.userToken) {
-        console.log(req.body);
-        res.send({ status: true });
+        res.send({
+            status: true
+        });
     } else {
-        res.send({ status: false });
+        res.send({
+            status: false
+        });
     }
 })
 

@@ -6,21 +6,37 @@ const mongo = require('../mongo/std');
 router.get('/', (req, res) => {
     //获取组织名
     let organization = req.query.organization;
-    mongo.students.find({
-        $or: [{
-            organizationFirst: organization
-        }, {
-            organizationSecond: organization
-        }]
-        //只有第一或第二志愿存在当前组织才会显示
-    }, (err, docu) => {
-        if (err) throw err;
-        let data = {
-            length: docu.length,
-            stdDataArr: docu
-        }
-        res.send(data);
-    })
+    if (organization === 'SIPC') {
+        mongo.students.find({}, (err, docu) => {
+            if (err) throw err;
+            else {
+                let data = {
+                    length: docu.length,
+                    stdDataArr: docu
+                }
+                res.send(data)
+            }
+        })
+    } else {
+        mongo.students.find({
+            $or: [{
+                organizationFirst: organization
+            }, {
+                organizationSecond: organization
+            }, {
+                organizationAdvance: organization
+            }]
+            //只有第一或第二志愿或提前批志愿存在当前组织才会显示
+        }, (err, docu) => {
+            if (err) throw err;
+            let data = {
+                length: docu.length,
+                stdDataArr: docu
+            }
+            res.send(data);
+        })
+    }
+
 })
 
 module.exports = router;

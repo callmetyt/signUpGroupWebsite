@@ -7,7 +7,11 @@ router.post('/', (req, res) => {
     userId: req.body.userId
   }, (err, docu) => {
     if (err) throw err;
-    else {
+    else if (docu == null || docu == undefined) {
+      res.send({
+        authority: 'admin'
+      })
+    } else {
       res.send({
         authority: docu.authority
       })

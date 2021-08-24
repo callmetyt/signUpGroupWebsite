@@ -7,17 +7,18 @@ import signUp from '@/pages/signUp'
 
 Vue.use(Router);
 export default new Router({
-    routes: [{
-        path: '/admin',
-        name: 'Admin',
-        component: admin
-    }, {
-        path: '/login',
-        name: 'Admin',
-        component: login
-    }, {
-        path: '/',
-        name: 'signUp',
-        component: signUp
-    }]
+  mode: 'history',
+  routes: [{
+    path: '/admin',
+    name: 'Admin',
+    component: admin
+  }, {
+    path: '/login',
+    name: 'Admin',
+    component: login
+  }, {
+    path: '/',
+    name: 'signUp',
+    component: signUp
+  }]
 })

@@ -1,9 +1,11 @@
 {
-  "serverAddress": "http://localhost:8081",
+  "serverAddress": "http://localhost:8088",
   "test": "test",
-  "tableColumns": [{
+  "tableColumns": [
+    {
       "title": "学号",
-      "key": "stdId"
+      "key": "stdId",
+      "sortable": true
     },
     {
       "title": "姓名",
@@ -24,6 +26,18 @@
     {
       "title": "手机号",
       "key": "stdPhone"
+    },
+    {
+      "title": "提前批组织",
+      "key": "organizationAdvance"
+    },
+    {
+      "title": "提前批部门",
+      "key": "branchAdvance"
+    },
+    {
+      "title": "提前批原因",
+      "key": "reasonAdvance"
     },
     {
       "title": "一志愿组织",
@@ -59,10 +73,56 @@
       "align": "center"
     }
   ],
-  "majorData": [{
+  "tableColumnsAdvance": [
+    {
+      "title": "学号",
+      "key": "stdId",
+      "sortable": true
+    },
+    {
+      "title": "姓名",
+      "key": "stdName"
+    },
+    {
+      "title": "专业",
+      "key": "major"
+    },
+    {
+      "title": "班级",
+      "key": "classNum"
+    },
+    {
+      "title": "qq号",
+      "key": "stdQQ"
+    },
+    {
+      "title": "手机号",
+      "key": "stdPhone"
+    },
+    {
+      "title": "提前批组织",
+      "key": "organizationAdvance"
+    },
+    {
+      "title": "提前批部门",
+      "key": "branchAdvance"
+    },
+    {
+      "title": "提前批原因",
+      "key": "reasonAdvance"
+    },
+    {
+      "title": "动作",
+      "slot": "action",
+      "align": "center"
+    }
+  ],
+  "majorData": [
+    {
       "value": "计算机",
       "label": "计算机科学与技术",
-      "children": [{
+      "children": [
+        {
           "value": "一班",
           "label": "一班"
         },
@@ -83,7 +143,8 @@
     {
       "value": "信安",
       "label": "信息安全",
-      "children": [{
+      "children": [
+        {
           "value": "一班",
           "label": "一班"
         },
@@ -104,7 +165,8 @@
     {
       "value": "物联",
       "label": "物联网",
-      "children": [{
+      "children": [
+        {
           "value": "一班",
           "label": "一班"
         },
@@ -117,7 +179,8 @@
     {
       "value": "大数据",
       "label": "数据科学与大数据技术",
-      "children": [{
+      "children": [
+        {
           "value": "一班",
           "label": "一班"
         },
@@ -130,7 +193,8 @@
     {
       "value": "中加",
       "label": "计算机科学与技术(中外合作)",
-      "children": [{
+      "children": [
+        {
           "value": "一班",
           "label": "一班"
         },
@@ -157,18 +221,26 @@
       ]
     }
   ],
-  "orginazationData": [{
-      "value": "科技协会",
-      "label": "科技协会",
-      "children": [{
-        "value": "科技协会",
-        "label": "科技协会"
-      }]
+  "orginazationData": [
+    {
+      "value": "学生创新实践中心科技发展部",
+      "label": "学生创新实践中心科技发展部",
+      "children": [
+        {
+          "value": "技术组",
+          "label": "技术组"
+        },
+        {
+          "value": "创新创意组",
+          "label": "创新创意组"
+        }
+      ]
     },
     {
       "value": "团委",
       "label": "团委",
-      "children": [{
+      "children": [
+        {
           "value": "组织部",
           "label": "组织部"
         },
@@ -177,83 +249,190 @@
           "label": "宣传部"
         },
         {
-          "value": "心协",
-          "label": "心协"
+          "value": "心理协会",
+          "label": "心理协会"
         },
         {
-          "value": "青协",
-          "label": "青协"
+          "value": "青年志愿者协会",
+          "label": "青年志愿者协会"
         }
       ]
     },
     {
       "value": "学生会",
       "label": "学生会",
-      "children": [{
-          "value": "办公室",
-          "label": "办公室"
-        },
-        {
-          "value": "学习部",
-          "label": "学习部"
-        },
-        {
-          "value": "宣传部",
-          "label": "宣传部"
-        },
+      "children": [
         {
           "value": "文艺部",
           "label": "文艺部"
         },
         {
-          "value": "体育部",
-          "label": "体育部"
-        },
-        {
           "value": "外联部",
           "label": "外联部"
-        },
-        {
-          "value": "自管会",
-          "label": "自管会"
-        }
-      ]
-    },
-    {
-      "value": "勤工助学中心",
-      "label": "勤工助学中心",
-      "children": [{
-          "value": "管理部",
-          "label": "管理部"
-        },
-        {
-          "value": "活动部",
-          "label": "活动部"
-        },
-        {
-          "value": "助贷部",
-          "label": "助贷部"
-        },
-        {
-          "value": "外联部",
-          "label": "外联部"
-        }
-      ]
-    },
-    {
-      "value": "新闻中心",
-      "label": "新闻中心",
-      "children": [{
-          "value": "摄影协会",
-          "label": "摄影协会"
         },
         {
           "value": "新媒体部",
           "label": "新媒体部"
         },
         {
-          "value": "记者团",
-          "label": "记者团"
+          "value": "学习部",
+          "label": "学习部"
+        },
+        {
+          "value": "体育部",
+          "label": "体育部"
+        },
+        {
+          "value": "传媒技术部",
+          "label": "传媒技术部"
+        }
+      ]
+    },
+    {
+      "value": "学生事务服务中心",
+      "label": "学生事务服务中心",
+      "children": [
+        {
+          "value": "办公室",
+          "label": "办公室"
+        },
+        {
+          "value": "助贷部",
+          "label": "助贷部"
+        },
+        {
+          "value": "宿舍自管会",
+          "label": "宿舍自管会"
+        },
+        {
+          "value": "活动部",
+          "label": "活动部"
+        },
+        {
+          "value": "生涯研习部",
+          "label": "生涯研习部"
+        }
+      ]
+    }
+  ],
+  "orginazationDataSecond": [
+    {
+      "value": "学生创新实践中心科技发展部",
+      "label": "学生创新实践中心科技发展部",
+      "children": [
+        {
+          "value": "创新创意组",
+          "label": "创新创意组"
+        }
+      ]
+    },
+    {
+      "value": "团委",
+      "label": "团委",
+      "children": [
+        {
+          "value": "组织部",
+          "label": "组织部"
+        },
+        {
+          "value": "宣传部",
+          "label": "宣传部"
+        },
+        {
+          "value": "心理协会",
+          "label": "心理协会"
+        },
+        {
+          "value": "青年志愿者协会",
+          "label": "青年志愿者协会"
+        }
+      ]
+    },
+    {
+      "value": "学生会",
+      "label": "学生会",
+      "children": [
+        {
+          "value": "文艺部",
+          "label": "文艺部"
+        },
+        {
+          "value": "外联部",
+          "label": "外联部"
+        },
+        {
+          "value": "新媒体部",
+          "label": "新媒体部"
+        },
+        {
+          "value": "学习部",
+          "label": "学习部"
+        },
+        {
+          "value": "体育部",
+          "label": "体育部"
+        },
+        {
+          "value": "传媒技术部",
+          "label": "传媒技术部"
+        }
+      ]
+    },
+    {
+      "value": "学生事务服务中心",
+      "label": "学生事务服务中心",
+      "children": [
+        {
+          "value": "办公室",
+          "label": "办公室"
+        },
+        {
+          "value": "助贷部",
+          "label": "助贷部"
+        },
+        {
+          "value": "宿舍自管会",
+          "label": "宿舍自管会"
+        },
+        {
+          "value": "活动部",
+          "label": "活动部"
+        },
+        {
+          "value": "生涯研习部",
+          "label": "生涯研习部"
+        }
+      ]
+    }
+  ],
+  "organizationAdvance": [
+    {
+      "value": "学生会",
+      "label": "学生会",
+      "children": [
+        {
+          "value": "新媒体部",
+          "label": "新媒体部"
+        }
+      ]
+    },
+    {
+      "value": "团委",
+      "label": "团委",
+      "children": [
+        {
+          "value": "心理协会",
+          "label": "心理协会"
+        }
+      ]
+    },
+    {
+      "value": "学生事务服务中心",
+      "label": "学生事务服务中心",
+      "children": [
+        {
+          "value": "助贷部",
+          "label": "助贷部"
         }
       ]
     }
